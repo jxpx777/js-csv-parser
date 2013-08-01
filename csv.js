@@ -41,7 +41,7 @@ function CSVParser(data, fieldSeparator, rowSeparator){
             ignoreCharacter = false,
             peekString = rowString.substring(fieldCursor, ++fieldCursor);
 
-        while (fieldCursor < rowString.length) {
+        while (fieldCursor <= rowString.length) {
             ignoreCharacter = false;
             if(!insideQuotedField && !insideEscapeSequence && peekString === that.fieldSeparator) {
                 fieldString = field.join("").trim().replace(/^"/,'').replace(/"$/, '');
@@ -72,9 +72,14 @@ function CSVParser(data, fieldSeparator, rowSeparator){
         return this.rows.length;
     };
     this.parse = function parse(){
-        var rowString;
+        var rowString, fieldCount, consistentRows;
         while((rowString = scanRow(cursor))) {
             this.rows.push(scanFields(rowString));
+        }
+        fieldCount = this.rows[0].length || 0
+        consistentRows = this.rows.every(function(row, index, array){ return row.length === fieldCount; });
+        if (!consistentRows) {
+            throw "Invalid CSV format. Each row should have the same number of fields as the first row. " + JSON.stringify(this.rows);
         }
     };
 }
