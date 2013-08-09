@@ -1,3 +1,4 @@
+/* jshint curly: false */
 function CSVParser(data, fieldSeparator, rowSeparator){
     "use strict";
     this.fieldSeparator = fieldSeparator || ",";
@@ -76,8 +77,8 @@ function CSVParser(data, fieldSeparator, rowSeparator){
         while((rowString = scanRow(cursor))) {
             this.rows.push(scanFields(rowString));
         }
-        fieldCount = this.rows[0].length || 0
-        consistentRows = this.rows.every(function(row, index, array){ return row.length === fieldCount; });
+        fieldCount = this.rows[0].length || 0;
+        consistentRows = this.rows.every(function(row, index, array){ /* jshint unused:false */ return row.length === fieldCount; });
         if (!consistentRows) {
             throw "Invalid CSV format. Each row should have the same number of fields as the first row. " + JSON.stringify(this.rows);
         }
