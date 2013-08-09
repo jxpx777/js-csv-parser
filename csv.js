@@ -7,10 +7,10 @@ function CSVParser(data, fieldSeparator, rowSeparator){
 
     var that = this, cursor = 0;
 
-    function scanRow(index) { 
+    function scanRow(index) {
         if (index >= that.data.length-1) return null;
 
-        var peekString = that.data.substring(cursor, ++cursor), 
+        var peekString = that.data.substring(cursor, ++cursor),
             insideQuotedField = false, insideEscapeSequence = false;
 
         while(peekString && (insideQuotedField || insideEscapeSequence || peekString !== that.rowSeparator)) {
@@ -36,7 +36,7 @@ function CSVParser(data, fieldSeparator, rowSeparator){
     function scanFields(rowString) {
 
         var fields = [], field = [], fieldString, fieldCursor = 0,
-            insideQuotedField = false, 
+            insideQuotedField = false,
             insideEscapeSequence = false,
             ignoreCharacter = false,
             peekString = rowString.substring(fieldCursor, ++fieldCursor);
