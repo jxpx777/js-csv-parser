@@ -52,11 +52,11 @@ function CSVParser(data, fieldSeparator, rowSeparator){
             }
             else {
                 if (peekString === "\\") {
-                    insideEscapeSequence = !insideEscapeSequence;
+                    insideEscapeSequence = insideQuotedField && !insideEscapeSequence;
                     if (insideEscapeSequence) ignoreCharacter = true;
                 }
                 else if (peekString === "\"") {
-                    insideQuotedField = insideEscapeSequence;
+                    if (!insideEscapeSequence) insideQuotedField = (!insideQuotedField && !insideEscapeSequence);
                 }
                 else {
                     insideEscapeSequence = false;
@@ -78,7 +78,7 @@ function CSVParser(data, fieldSeparator, rowSeparator){
             this.rows.push(scanFields(rowString));
         }
         fieldCount = this.rows[0].length || 0;
-        consistentRows = this.rows.every(function(row, index, array){ /* jshint unused:false */ return row.length === fieldCount; });
+        consistentRows = this.rows.every(function(row){ return row.length === fieldCount; });
         if (!consistentRows) {
             throw "Invalid CSV format. Each row should have the same number of fields as the first row. " + JSON.stringify(this.rows);
         }

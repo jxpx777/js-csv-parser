@@ -65,7 +65,7 @@ describe("CSVParser", function() {
         expect(parser.rows[1][4]).toEqual('"example.com"');
       });
       it("handles fields with escaped backslashes", function(){
-        data = '"url","user\nname","password","extra","name","grouping","fav"\n"https://www.example.com","myUsername","mypassword","",\\\\example.com\\\\","","1"';
+        data = '"url","user\nname","password","extra","name","grouping","fav"\n"https://www.example.com","myUsername","mypassword","","\\\\example.com\\\\","","1"';
         parser = new CSVParser(data);
         parser.parse();
         expect(parser.rows[1][4]).toEqual('\\example.com\\');
@@ -75,6 +75,13 @@ describe("CSVParser", function() {
         parser = new CSVParser(data);
         parser.parse();
         expect(parser.rows[1][4]).toEqual('"example.com\\');
+      });
+      it("handles quoted fields with commas", function(){
+        data = '"u,r,l","user\nname","password","extra","name","grouping","fav"\n"https://www.example.com","myUser,name","mypassword","","\\"example.com\\\\","","1"';
+        parser = new CSVParser(data);
+        parser.parse();
+        expect(parser.rows[0][0]).toEqual('u,r,l');
+        expect(parser.rows[1][1]).toEqual('myUser,name');
       });
     });
   });
