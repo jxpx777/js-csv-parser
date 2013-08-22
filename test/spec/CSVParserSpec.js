@@ -83,6 +83,12 @@ describe("CSVParser", function() {
         expect(parser.rows[0][0]).toEqual('u,r,l');
         expect(parser.rows[1][1]).toEqual('myUser,name');
       });
+      it("handles quoted fields with trailing escaped quotes", function(){
+        data = '"u,r,l\\\"","user\nname","password","extra","name","grouping","fav"\n"https://www.example.com","myUser,name","mypassword","","\\"example.com\\\\","","1"';
+        parser = new CSVParser(data);
+        parser.parse();
+        expect(parser.rows[0][0]).toEqual('u,r,l"');
+      });
     });
   });
 

@@ -15,19 +15,12 @@ function CSVParser(data, fieldSeparator, rowSeparator){
             insideQuotedField = false, insideEscapeSequence = false;
 
         while(peekString && (insideQuotedField || insideEscapeSequence || peekString !== that.rowSeparator)) {
-            if (peekString === "\\" && !insideEscapeSequence) {
-                insideEscapeSequence = true;
+            if (peekString === "\\") {
+                insideEscapeSequence = !insideEscapeSequence;
             }
-            else {
+            if (peekString === '"') {
+                insideQuotedField = insideEscapeSequence ? true : !insideQuotedField;
                 insideEscapeSequence = false;
-            }
-            if (peekString === "\""){
-                if(insideQuotedField && !insideEscapeSequence) {
-                    insideQuotedField = false;
-                }
-                else {
-                    insideQuotedField = true;
-                }
             }
             peekString = that.data.substring(cursor, ++cursor);
         }
@@ -35,7 +28,6 @@ function CSVParser(data, fieldSeparator, rowSeparator){
         return rowString;
     }
     function scanFields(rowString) {
-
         var fields = [], field = [], fieldString, fieldCursor = 0,
             insideQuotedField = false,
             insideEscapeSequence = false,
@@ -55,8 +47,9 @@ function CSVParser(data, fieldSeparator, rowSeparator){
                     insideEscapeSequence = insideQuotedField && !insideEscapeSequence;
                     if (insideEscapeSequence) ignoreCharacter = true;
                 }
-                else if (peekString === "\"") {
+                else if (peekString === '"') {
                     if (!insideEscapeSequence) insideQuotedField = (!insideQuotedField && !insideEscapeSequence);
+                    insideEscapeSequence = false;
                 }
                 else {
                     insideEscapeSequence = false;
