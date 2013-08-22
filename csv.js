@@ -1,8 +1,16 @@
 /* jshint curly: false */
-function CSVParser(data, fieldSeparator, rowSeparator){
+function CSVParser(data, options){
     "use strict";
-    this.fieldSeparator = fieldSeparator || ",";
-    this.rowSeparator = rowSeparator || "\n";
+    var defaultOptions = { fieldSeparator: ',', rowSeparator: "\n", strict: true};
+    if (options === undefined) options = {};
+    this.options = {};
+    Object.keys(defaultOptions).forEach(function(key) {
+        console.log("enumerating: " + JSON.stringify(key));
+        this.options[key] = options[key] || defaultOptions[key];
+    }, this);
+    console.log(JSON.stringify(options));
+    this.fieldSeparator = this.options.fieldSeparator;
+    this.rowSeparator = this.options.rowSeparator;
     this.rows = [];
     this.data = data;
 
@@ -70,10 +78,12 @@ function CSVParser(data, fieldSeparator, rowSeparator){
         while((rowString = scanRow(cursor))) {
             this.rows.push(scanFields(rowString));
         }
-        fieldCount = this.rows[0].length || 0;
-        consistentRows = this.rows.every(function(row){ return row.length === fieldCount; });
-        if (!consistentRows) {
-            throw "Invalid CSV format. Each row should have the same number of fields as the first row. " + JSON.stringify(this.rows);
+        if (this.options.strict) {
+            fieldCount = this.rows[0].length || 0;
+            consistentRows = this.rows.every(function(row){ return row.length === fieldCount; });
+            if (!consistentRows) {
+                throw "Invalid CSV format. Each row should have the same number of fields as the first row. " + JSON.stringify(this.rows.map(function(row){ return row.length; } ));
+            }
         }
     };
 }

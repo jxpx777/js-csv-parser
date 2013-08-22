@@ -9,7 +9,9 @@ I needed one and couldn't find anything great that didn't suffer from edge cases
 
 
 ## How? ##
-Import csv.js. Create a `new CSVParser(stringOfCSVData)` and call `parse`. If your field separator and row separator are anything but `,` and `\n` respectively, pass those in as the second and third parameters to the constructor.
+Import csv.js. Create a `new CSVParser(stringOfCSVData[, options])` and call `parse`.
+
+**Options:** The second parameter to the constructor is an options object. This parameter allows to specify custom `fieldSeparator` and `rowSeparator` characters. By default, this library parses in strict mode, requiring all rows to have the same number of fields. If for some reason you don't want this, set the `strict` option to `false`.
 
 
 ## Support ##

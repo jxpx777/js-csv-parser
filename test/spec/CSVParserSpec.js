@@ -15,11 +15,11 @@ describe("CSVParser", function() {
       expect(parser.rowSeparator).toEqual("\n");
     });
     it("accepts a custom field separator", function(){
-      parser = new CSVParser(data, "|");
+      parser = new CSVParser(data, {fieldSeparator: "|"});
       expect(parser.fieldSeparator).toEqual("|");
     });
     it("accepts a custom row separator", function(){
-      parser = new CSVParser(data, ",", "|");
+      parser = new CSVParser(data, {fieldSeparator: ",", rowSeparator: "|"});
       expect(parser.rowSeparator).toEqual("|");
     });
   });
@@ -34,13 +34,13 @@ describe("CSVParser", function() {
       });
       it("parses rows with custom row separator", function(){
         data = 'url,username,password,extra,name,grouping,fav|https://www.example.com,myUsername,mypassword,,example.com,,1';
-        parser = new CSVParser(data, ",", "|");
+        parser = new CSVParser(data, {fieldSeparator: ",", rowSeparator: "|"});
         parser.parse();
         expect(parser.numberOfRows()).toEqual(2);
       });
       it("parses rows with custom field separator", function(){
         data = 'url|username|password|extra|name|grouping|fav\nhttps://www.example.com|myUsername|mypassword||example.com||1';
-        parser = new CSVParser(data, "|");
+        parser = new CSVParser(data, {fieldSeparator: "|"});
         parser.parse();
         expect(parser.numberOfRows()).toEqual(2);
       });
