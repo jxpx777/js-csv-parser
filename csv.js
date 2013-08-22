@@ -5,10 +5,8 @@ function CSVParser(data, options){
     if (options === undefined) options = {};
     this.options = {};
     Object.keys(defaultOptions).forEach(function(key) {
-        console.log("enumerating: " + JSON.stringify(key));
         this.options[key] = options[key] || defaultOptions[key];
     }, this);
-    console.log(JSON.stringify(options));
     this.fieldSeparator = this.options.fieldSeparator;
     this.rowSeparator = this.options.rowSeparator;
     this.rows = [];
