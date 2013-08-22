@@ -59,7 +59,7 @@ function CSVParser(data, fieldSeparator, rowSeparator){
             peekString = rowString.substring(fieldCursor, ++fieldCursor);
         }
         //Catch the last field since it does not have a field separator following.
-        if(field.length !== 0) fields.push(field.join("").trim().replace(/^"/, '').replace(/"$/, ''));
+        fields.push(field.join("").trim().replace(/^"/, '').replace(/"$/, ''));
         return fields;
     }
     this.numberOfRows = function numberOfRows() {

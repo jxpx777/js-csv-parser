@@ -89,6 +89,12 @@ describe("CSVParser", function() {
         parser.parse();
         expect(parser.rows[0][0]).toEqual('u,r,l"');
       });
+      it("can parse data with trailing empty field", function(){
+        data = '"u,r,l\\\"","user\nname","password","extra","name","grouping","fav","empty column"\n"https://www.example.com","myUser,name","mypassword","","\\"example.com\\\\","","1",';
+        parser = new CSVParser(data);
+        parser.parse();
+        expect(parser.rows[0][0]).toEqual('u,r,l"');
+      });
     });
   });
 
