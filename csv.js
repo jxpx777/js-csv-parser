@@ -73,7 +73,7 @@ function CSVParser(data, options){
     };
     this.parse = function parse(){
         var rowString, fieldCount, consistentRows;
-        while((rowString = scanRow(cursor))) {
+        while((rowString = scanRow(cursor))!=null) {
             this.rows.push(scanFields(rowString));
         }
         if (this.options.strict) {
