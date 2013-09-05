@@ -5,7 +5,7 @@ function CSVParser(data, options){
     if (options === undefined) options = {};
     this.options = {};
     Object.keys(defaultOptions).forEach(function(key) {
-        this.options[key] = options[key] || defaultOptions[key];
+        this.options[key] = options[key] === undefined ? defaultOptions[key] : options[key];
     }, this);
     this.fieldSeparator = this.options.fieldSeparator;
     this.rowSeparator = this.options.rowSeparator;
