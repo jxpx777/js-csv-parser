@@ -1,7 +1,7 @@
 /* jshint curly: false */
 function CSVParser(data, options){
     "use strict";
-    var defaultOptions = { fieldSeparator: ',', rowSeparator: "\n", strict: true};
+    var defaultOptions = { "fieldSeparator": ",", "rowSeparator": "\n", "strict": true};
     if (options === undefined) options = {};
     this.options = {};
     Object.keys(defaultOptions).forEach(function(key) {
