@@ -1,5 +1,27 @@
 describe("CSVParser", function() {
   var parser, data, fieldSeparator, rowSeparator;
+
+  describe("output", function(){
+    beforeEach(function(){
+      data = 'url,username,password,extra,name,grouping,fav\nhttps://www.example.com,username,password,,example.com,,1\n,,,,,,';
+    });
+    it("should exclude empty rows by default", function(){
+      parser = new CSVParser(data);
+      parser.parse();
+      expect(parser.numberOfRows()).toEqual(2);
+    });
+    it("should exclude empty rows with explicit true option", function(){
+      parser = new CSVParser(data, {removeEmpty: true});
+      parser.parse();
+      expect(parser.numberOfRows()).toEqual(2);
+    });
+    it("should not exclude empty rows with explicit false option", function(){
+      parser = new CSVParser(data, {removeEmpty: false});
+      parser.parse();
+      expect(parser.numberOfRows()).toEqual(3);
+    });
+  });
+
   describe("separators", function(){
     beforeEach(function(){
       data = 'url,username,password,extra,name,grouping,fav\nhttps://www.example.com,myUsername,"abcdé\"4j+<+G9\n3$6,6,+z:(b?g\\",,example.com,,1';
