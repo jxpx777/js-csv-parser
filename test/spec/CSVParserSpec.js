@@ -11,12 +11,12 @@ describe("CSVParser", function() {
       expect(parser.numberOfRows()).toEqual(2);
     });
     it("should exclude empty rows with explicit true option", function(){
-      parser = new CSVParser(data, {removeEmpty: true});
+      parser = new CSVParser(data, {ignoreEmpty: true});
       parser.parse();
       expect(parser.numberOfRows()).toEqual(2);
     });
     it("should not exclude empty rows with explicit false option", function(){
-      parser = new CSVParser(data, {removeEmpty: false});
+      parser = new CSVParser(data, {ignoreEmpty: false});
       parser.parse();
       expect(parser.numberOfRows()).toEqual(3);
     });

@@ -1,7 +1,7 @@
 /* jshint curly: false */
 function CSVParser(data, options){
     "use strict";
-    var defaultOptions = { "fieldSeparator": ",", "rowSeparator": "\n", "strict": true, "removeEmpty": true};
+    var defaultOptions = { "fieldSeparator": ",", "rowSeparator": "\n", "strict": true, "ignoreEmpty": true};
     if (options === undefined) options = {};
     this.options = {};
     Object.keys(defaultOptions).forEach(function(key) {
@@ -72,10 +72,10 @@ function CSVParser(data, options){
         return this.rows.length;
     };
     this.parse = function parse(){
-        var rowString, fieldCount, consistentRows, fields, emptyChecker = function(field) { return field !== ""; };
+        var rowString, fieldCount, consistentRows, fields, notEmpty = function(field) { return field !== ""; };
         while((rowString = scanRow(cursor))!=null) {
             fields = scanFields(rowString);
-            if (fields.some(emptyChecker) || this.options.removeEmpty === false) {
+            if (fields.some(notEmpty) || this.options.ignoreEmpty === false) {
                 this.rows.push(fields);
             }
         }
