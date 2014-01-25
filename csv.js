@@ -17,18 +17,27 @@ function CSVParser(data, options){
     function scanRow(index) {
         if (index >= that.data.length-1) return null;
 
-        var peekString = that.data.substring(cursor, ++cursor),
+        var currentCharacter = that.data.substring(cursor, ++cursor),
+            peekCharacter = that.data.substring(cursor, cursor+1),
             insideQuotedField = false, insideEscapeSequence = false;
 
-        while(peekString && (insideQuotedField || insideEscapeSequence || peekString !== that.rowSeparator)) {
-            if (peekString === "\\") {
-                insideEscapeSequence = !insideEscapeSequence;
+        while(currentCharacter && (insideQuotedField || insideEscapeSequence || currentCharacter !== that.rowSeparator)) {
+            if (currentCharacter === '"') {
+                if (!insideQuotedField) {
+                    insideQuotedField = true;
+                }
+                else if (insideEscapeSequence) {
+                    insideEscapeSequence = false;
+                }
+                else if (peekCharacter === '"'){
+                    insideEscapeSequence = true;
+                }
+                else {
+                    insideQuotedField = !insideQuotedField;
+                }
             }
-            if (peekString === '"') {
-                insideQuotedField = insideEscapeSequence ? true : !insideQuotedField;
-                insideEscapeSequence = false;
-            }
-            peekString = that.data.substring(cursor, ++cursor);
+            currentCharacter = that.data.substring(cursor, ++cursor);
+            peekCharacter = that.data.substring(cursor, cursor+1);
         }
         var rowString = that.data.substring(index, cursor).trim();
         return rowString;
@@ -38,34 +47,41 @@ function CSVParser(data, options){
             insideQuotedField = false,
             insideEscapeSequence = false,
             ignoreCharacter = false,
-            peekString = rowString.substring(fieldCursor, ++fieldCursor);
-
+            currentCharacter = rowString.substring(fieldCursor, ++fieldCursor),
+            peekCharacter = rowString.substring(fieldCursor, fieldCursor+1);
         while (fieldCursor <= rowString.length) {
             ignoreCharacter = false;
-            if(!insideQuotedField && !insideEscapeSequence && peekString === that.fieldSeparator) {
+            if(!insideQuotedField && !insideEscapeSequence && currentCharacter === that.fieldSeparator) {
                 fieldString = field.join("").trim().replace(/^"/,'').replace(/"$/, '');
                 insideEscapeSequence = insideQuotedField = false;
                 fields.push(fieldString);
                 field = [];
             }
             else {
-                if (peekString === "\\") {
-                    insideEscapeSequence = insideQuotedField && !insideEscapeSequence;
-                    if (insideEscapeSequence) ignoreCharacter = true;
+                if (currentCharacter === '"') {
+                    if (!insideQuotedField) {
+                        insideQuotedField = true;
+                    }
+                    else if (insideEscapeSequence) {
+                        insideEscapeSequence = false;
+                    }
+                    else if (peekCharacter === '"'){
+                        insideEscapeSequence = true;
+                    }
+                    else {
+                        insideQuotedField = !insideQuotedField;
+                    }
                 }
-                else if (peekString === '"') {
-                    if (!insideEscapeSequence) insideQuotedField = (!insideQuotedField && !insideEscapeSequence);
-                    insideEscapeSequence = false;
-                }
-                else {
-                    insideEscapeSequence = false;
-                }
-                if (!ignoreCharacter) { field.push(peekString); }
+                if (!insideEscapeSequence) { field.push(currentCharacter); }
             }
-            peekString = rowString.substring(fieldCursor, ++fieldCursor);
+            currentCharacter = rowString.substring(fieldCursor, ++fieldCursor);
+            peekCharacter = rowString.substring(fieldCursor, fieldCursor+1);
         }
+
         //Catch the last field since it does not have a field separator following.
-        fields.push(field.join("").trim().replace(/^"/, '').replace(/"$/, ''));
+        fieldString = field.join("").trim().replace(/^"/, '').replace(/"$/, '');
+
+        fields.push(fieldString);
         return fields;
     }
     this.numberOfRows = function numberOfRows() {
