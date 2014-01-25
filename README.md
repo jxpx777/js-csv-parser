@@ -1,7 +1,7 @@
 # CSV.js #
 
 ## What? ##
-A CSV parser written in Javascript. It handles double-quoted fields and multi-line rows. It's strict mode compliant and has no warnings or errors against JSHint.
+A parser for RFC 4180 compliant CSV data written in Javascript. It handles double-quoted fields and multi-line rows. It's strict mode compliant, has no warnings or errors against JSHint, and includes Jasmine specs to make sure things keep working well.
 
 
 ## Why? ##
@@ -15,4 +15,4 @@ Import csv.js. Create a `new CSVParser(stringOfCSVData[, options])` and call `pa
 
 
 ## Support ##
-If you're using this, I'd love to know. If you run into bugs, report them and I'll see what I can do. Better yet, if you see a problem, fork, fix, and send a pull request.
+If you're using this, I'd love to know. If you run into bugs, report them and I'll see what I can do. Better yet, if you see a problem, fork, fix, and send a pull request. Pull requests without tests will be rejected. You should be writing tests for your code.
