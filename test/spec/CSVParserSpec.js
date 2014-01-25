@@ -89,7 +89,7 @@ describe("CSVParser", function() {
         expect(parser.numberOfRows()).toEqual(2);
         expect(parser.rows[1][4]).toEqual('"example.com"');
       });
-      it("handles fields with escaped backslashes", function(){
+      it("handles fields with backslashes", function(){
         data = ['"url","user\nname","password","extra","name","grouping","fav"', '"https://www.example.com","myUsername","mypassword","","\\example.com\\","","1"'].join("\n");
         parser = new CSVParser(data);
         parser.parse();
