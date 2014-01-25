@@ -72,36 +72,42 @@ describe("CSVParser", function() {
         data = ['"url","username","password","extra","name","grouping","fav"', '"https://www.example.com","myUsername","mypassword","","example.com","","1"'].join("\n");
         parser = new CSVParser(data);
         parser.parse();
+        expect(parser.numberOfRows()).toEqual(2);
         expect(parser.rows[0][0]).toEqual("url");
       });
       it("handles fields with newlines", function(){
         data = ['"url","user\nname","password","extra","name","grouping","fav"', '"https://www.example.com","myUsername","mypassword","","example.com","","1"'].join("\n");
         parser = new CSVParser(data);
         parser.parse();
+        expect(parser.numberOfRows()).toEqual(2);
         expect(parser.rows[0][1]).toEqual("user\nname");
       });
       it("handles fields with escaped double quotes", function(){
         data = ['"url","user\nname","password","extra","name","grouping","fav"', '"https://www.example.com","myUsername","mypassword","","""example.com""","","1"'].join("\n");
         parser = new CSVParser(data);
         parser.parse();
+        expect(parser.numberOfRows()).toEqual(2);
         expect(parser.rows[1][4]).toEqual('"example.com"');
       });
       it("handles fields with escaped backslashes", function(){
         data = ['"url","user\nname","password","extra","name","grouping","fav"', '"https://www.example.com","myUsername","mypassword","","\\example.com\\","","1"'].join("\n");
         parser = new CSVParser(data);
         parser.parse();
+        expect(parser.numberOfRows()).toEqual(2);
         expect(parser.rows[1][4]).toEqual('\\example.com\\');
       });
       it("handles fields with tricky backslashes", function(){
         data = ['"url","user\nname","password","extra","name","grouping","fav"', '"https://www.example.com","myUsername","mypassword","","""example.com\\","","1"'].join("\n");
         parser = new CSVParser(data);
         parser.parse();
+        expect(parser.numberOfRows()).toEqual(2);
         expect(parser.rows[1][4]).toEqual('"example.com\\');
       });
       it("handles quoted fields with commas", function(){
         data = ['"u,r,l","username","password","extra","name","grouping","fav"', '"https://www.example.com","myUser,name","mypassword","","""example.com","","1"'].join("\n");
         parser = new CSVParser(data);
         parser.parse();
+        expect(parser.numberOfRows()).toEqual(2);
         expect(parser.rows[0][0]).toEqual('u,r,l');
         expect(parser.rows[1][1]).toEqual('myUser,name');
       });
@@ -109,12 +115,15 @@ describe("CSVParser", function() {
         data = ['"u,r,l""","username","password","extra","name","grouping","fav"', '"https://www.example.com","myUser,name","mypassword","","""example.com\\""""","","1"'].join("\n");
         parser = new CSVParser(data);
         parser.parse();
+        expect(parser.numberOfRows()).toEqual(2);
         expect(parser.rows[0][0]).toEqual('u,r,l"');
+        expect(parser.rows[1][4]).toEqual('"example.com\\""');
       });
       it("can parse data with trailing empty field", function(){
         data = ['"u,r,l""","user\nname","password","extra","name","grouping","fav","empty column"', '"https://www.example.com","myUser,name","mypassword","","""example.com\\","","1",'].join("\n");
         parser = new CSVParser(data);
         parser.parse();
+        expect(parser.numberOfRows()).toEqual(2);
         expect(parser.rows[0][0]).toEqual('u,r,l"');
       });
     });
