@@ -1,7 +1,7 @@
 /* jshint curly: false */
 function CSVParser(data, options){
     "use strict";
-    var defaultOptions = { "fieldSeparator": ",", "rowSeparator": "\n", "strict": true, "ignoreEmpty": true};
+    var defaultOptions = { "fieldSeparator": ",", "rowSeparator": "\r\n", "strict": true, "ignoreEmpty": true};
     if (options === undefined) options = {};
     this.options = {};
     Object.keys(defaultOptions).forEach(function(key) {
@@ -19,9 +19,9 @@ function CSVParser(data, options){
 
         var currentCharacter = that.data.substring(cursor, ++cursor),
             peekCharacter = that.data.substring(cursor, cursor+1),
-            insideQuotedField = false, insideEscapeSequence = false;
+            insideQuotedField = false, insideEscapeSequence = false, rowIsEnded = false;
 
-        while(currentCharacter && (insideQuotedField || insideEscapeSequence || currentCharacter !== that.rowSeparator)) {
+        while(currentCharacter && (insideQuotedField || insideEscapeSequence || !rowIsEnded)) {
             if (currentCharacter === '"') {
                 if (!insideQuotedField) {
                     insideQuotedField = true;
@@ -36,8 +36,10 @@ function CSVParser(data, options){
                     insideQuotedField = !insideQuotedField;
                 }
             }
-            currentCharacter = that.data.substring(cursor, ++cursor);
-            peekCharacter = that.data.substring(cursor, cursor+1);
+            currentCharacter = that.data.substring(cursor, cursor+1);
+            peekCharacter = that.data.substring(cursor+1, cursor+2);
+            rowIsEnded = that.data.substring(cursor, cursor+that.rowSeparator.length) === that.rowSeparator;
+            cursor++;
         }
         var rowString = that.data.substring(index, cursor).trim();
         return rowString;
