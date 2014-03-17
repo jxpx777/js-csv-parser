@@ -16,3 +16,5 @@ Import csv.js. Create a `new CSVParser(stringOfCSVData[, options])` and call `pa
 
 ## Support ##
 If you're using this, I'd love to know. If you run into bugs, report them and I'll see what I can do. Better yet, if you see a problem, fork, fix, and send a pull request. Pull requests without tests will be rejected. You should be writing tests for your code.
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jxpx777/js-csv-parser/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
