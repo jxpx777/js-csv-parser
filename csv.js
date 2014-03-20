@@ -10,14 +10,13 @@ var CSVParser = (function(){
     }
 
     function Parser(data, options){
-        var defaultOptions = { "fieldSeparator": ",", "rowSeparator": "\r\n", "strict": true, "ignoreEmpty": true};
+        var defaultOptions = { "fieldSeparator": ",", "strict": true, "ignoreEmpty": true};
         if (options === undefined) options = {};
         this.options = {};
         Object.keys(defaultOptions).forEach(function(key) {
             this.options[key] = options[key] === undefined ? defaultOptions[key] : options[key];
         }, this);
         this.fieldSeparator = this.options.fieldSeparator;
-        this.rowSeparator = this.options.rowSeparator;
         this.rows = [];
         this.data = data;
     }
