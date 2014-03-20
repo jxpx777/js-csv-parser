@@ -1,6 +1,11 @@
 describe("CSVParser", function() {
   var parser, data, fieldSeparator;
-
+  describe("behavior", function(){
+    it("should report its object type properly", function(){
+      parser = new CSVParser("some,data,here\nin,two,lines");
+      expect(parser.toString()).toEqual("[object CSVParser]");
+    });
+  });
   describe("output", function(){
     beforeEach(function(){
       data = ['url,username,password,extra,name,grouping,fav', 'https://www.example.com,username,password,,example.com,,1', ',,,,,,'].join("\r\n");
