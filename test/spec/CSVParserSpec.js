@@ -1,5 +1,5 @@
 describe("CSVParser", function() {
-  var parser, data, fieldSeparator, rowSeparator;
+  var parser, data, fieldSeparator;
 
   describe("output", function(){
     beforeEach(function(){
@@ -31,18 +31,10 @@ describe("CSVParser", function() {
     it("uses comma as the default field separator", function(){
       expect(parser.fieldSeparator).toEqual(",");
     });
-
-    it("uses newline as the default row separator", function(){
-      parser = new CSVParser(data);
-      expect(parser.rowSeparator).toEqual("\r\n");
-    });
+    
     it("accepts a custom field separator", function(){
       parser = new CSVParser(data, {fieldSeparator: "|"});
       expect(parser.fieldSeparator).toEqual("|");
-    });
-    it("accepts a custom row separator", function(){
-      parser = new CSVParser(data, {fieldSeparator: ",", rowSeparator: "|"});
-      expect(parser.rowSeparator).toEqual("|");
     });
   });
 
@@ -51,12 +43,6 @@ describe("CSVParser", function() {
       it("parses rows with default separators", function(){
         data = ['url,username,password,extra,name,grouping,fav', 'https://www.example.com,myUsername,mypassword,,example.com,,1'].join("\r\n");
         parser = new CSVParser(data);
-        parser.parse();
-        expect(parser.numberOfRows()).toEqual(2);
-      });
-      it("parses rows with custom row separator", function(){
-        data = ['url,username,password,extra,name,grouping,fav', 'https://www.example.com,myUsername,mypassword,,example.com,,1'].join('|');
-        parser = new CSVParser(data, {fieldSeparator: ",", rowSeparator: "|"});
         parser.parse();
         expect(parser.numberOfRows()).toEqual(2);
       });
