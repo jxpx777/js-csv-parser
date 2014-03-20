@@ -56,6 +56,9 @@ var CSVParser = (function(){
             fields.push( strMatchedValue );
         }
         captureFields.apply(this, [fields]);
+        if (this.options.strict === true && !this.rows.every(function(row){ return (row.length === this.length); }, this.rows[0])) {
+            throw new Error("Invalid CSV data. Strict mode requires all rows to have the same number of fields. You can override this by passing `strict: false` in the CSVParser options");
+        }
     };
     return Parser;
 })();

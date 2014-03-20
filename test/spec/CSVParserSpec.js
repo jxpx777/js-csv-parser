@@ -118,6 +118,18 @@ describe("CSVParser", function() {
         expect(parser.rows[0][0]).toEqual('u,r,l"');
       });
     });
+    describe("options", function(){
+      it("throws an error when strict mode is violated", function(){
+        data = ['url,username,password,extra,name,grouping,fav', 'https://www.example.com,myUsername,mypassword,example.com,1'].join("\r\n");
+        parser = new CSVParser(data, {strict: true});
+        try {
+          parser.parse();
+        }
+        catch(e) {
+          expect(e.message).toMatch("Invalid CSV data");
+        }
+      });
+    })
   });
 
 });
