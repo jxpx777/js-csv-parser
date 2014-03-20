@@ -1,6 +1,6 @@
 # CSV.js #
 
-[ ![Codeship Status for jxpx777/js-csv-parser](https://www.codeship.io/projects/e13148e0-927c-0131-a40a-7e90334dd434/status?branch=master)](https://www.codeship.io/projects/16534) [![Code Climate](https://codeclimate.com/github/jxpx777/js-csv-parser.png)](https://codeclimate.com/github/jxpx777/js-csv-parser)
+[ ![Codeship Status for jxpx777/js-csv-parser](https://www.codeship.io/projects/e13148e0-927c-0131-a40a-7e90334dd434/status?branch=master)](https://www.codeship.io/projects/16534) [![Code Climate](https://codeclimate.com/github/jxpx777/js-csv-parser.png)](https://codeclimate.com/github/jxpx777/js-csv-parser) [![Coverage Status](https://coveralls.io/repos/jxpx777/js-csv-parser/badge.png)](https://coveralls.io/r/jxpx777/js-csv-parser)
 
 ## What? ##
 A parser for RFC 4180 compliant CSV data written in Javascript. It handles double-quoted fields and multi-line rows. It's strict mode compliant, has no warnings or errors against JSHint, and includes Jasmine specs to make sure things keep working well.
