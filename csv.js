@@ -1,108 +1,59 @@
 /* jshint curly: false */
-function CSVParser(data, options){
+var CSVParser = (function(){
     "use strict";
-    var defaultOptions = { "fieldSeparator": ",", "rowSeparator": "\r\n", "strict": true, "ignoreEmpty": true};
-    if (options === undefined) options = {};
-    this.options = {};
-    Object.keys(defaultOptions).forEach(function(key) {
-        this.options[key] = options[key] === undefined ? defaultOptions[key] : options[key];
-    }, this);
-    this.fieldSeparator = this.options.fieldSeparator;
-    this.rowSeparator = this.options.rowSeparator;
-    this.rows = [];
-    this.data = data;
-
-    var that = this, cursor = 0;
-
-    function scanRow(index) {
-        if (index >= that.data.length-1) return null;
-
-        var currentCharacter = that.data.substring(cursor, ++cursor),
-            peekCharacter = that.data.substring(cursor, cursor+1),
-            insideQuotedField = false, insideEscapeSequence = false, rowIsEnded = false;
-
-        while(currentCharacter && (insideQuotedField || insideEscapeSequence || !rowIsEnded)) {
-            if (currentCharacter === '"') {
-                if (!insideQuotedField) {
-                    insideQuotedField = true;
-                }
-                else if (insideEscapeSequence) {
-                    insideEscapeSequence = false;
-                }
-                else if (peekCharacter === '"'){
-                    insideEscapeSequence = true;
-                }
-                else {
-                    insideQuotedField = !insideQuotedField;
-                }
-            }
-            currentCharacter = that.data.substring(cursor, cursor+1);
-            peekCharacter = that.data.substring(cursor+1, cursor+2);
-            rowIsEnded = that.data.substring(cursor, cursor+that.rowSeparator.length) === that.rowSeparator;
-            cursor++;
+    function captureFields(fields) {
+        if (this.options.ignoreEmpty === false || fields.some(function(field){ return field.length !== 0 })) {
+            this.rows.push(fields);
         }
-        var rowString = that.data.substring(index, cursor).trim();
-        return rowString;
     }
-    function scanFields(rowString) {
-        var fields = [], field = [], fieldString, fieldCursor = 0,
-            insideQuotedField = false,
-            insideEscapeSequence = false,
-            ignoreCharacter = false,
-            currentCharacter = rowString.substring(fieldCursor, ++fieldCursor),
-            peekCharacter = rowString.substring(fieldCursor, fieldCursor+1);
-        while (fieldCursor <= rowString.length) {
-            ignoreCharacter = false;
-            if(!insideQuotedField && !insideEscapeSequence && currentCharacter === that.fieldSeparator) {
-                fieldString = field.join("").trim().replace(/^"/,'').replace(/"$/, '');
-                insideEscapeSequence = insideQuotedField = false;
-                fields.push(fieldString);
-                field = [];
-            }
-            else {
-                if (currentCharacter === '"') {
-                    if (!insideQuotedField) {
-                        insideQuotedField = true;
-                    }
-                    else if (insideEscapeSequence) {
-                        insideEscapeSequence = false;
-                    }
-                    else if (peekCharacter === '"'){
-                        insideEscapeSequence = true;
-                    }
-                    else {
-                        insideQuotedField = !insideQuotedField;
-                    }
-                }
-                if (!insideEscapeSequence) { field.push(currentCharacter); }
-            }
-            currentCharacter = rowString.substring(fieldCursor, ++fieldCursor);
-            peekCharacter = rowString.substring(fieldCursor, fieldCursor+1);
-        }
 
-        //Catch the last field since it does not have a field separator following.
-        fieldString = field.join("").trim().replace(/^"/, '').replace(/"$/, '');
-
-        fields.push(fieldString);
-        return fields;
+    function parser(data, options){
+        var defaultOptions = { "fieldSeparator": ",", "rowSeparator": "\r\n", "strict": true, "ignoreEmpty": true};
+        if (options === undefined) options = {};
+        this.options = {};
+        Object.keys(defaultOptions).forEach(function(key) {
+            this.options[key] = options[key] === undefined ? defaultOptions[key] : options[key];
+        }, this);
+        this.fieldSeparator = this.options.fieldSeparator;
+        this.rowSeparator = this.options.rowSeparator;
+        this.rows = [];
+        this.data = data;
     }
-    this.numberOfRows = function numberOfRows() {
-        return this.rows.length;
-    };
-    this.parse = function parse(){
-        var rowString, fieldCount, consistentRows, fields, notEmpty = function(field) { return field !== ""; };
-        while((rowString = scanRow(cursor))!=null) {
-            fields = scanFields(rowString);
-            if (fields.some(notEmpty) || this.options.ignoreEmpty === false) {
-                this.rows.push(fields);
+    parser.prototype.toString = function toString() { return "[object CSVParser]" }
+    parser.prototype.numberOfRows = function numberOfRows() { return this.rows.length; };
+    parser.prototype.parse = function parse(){
+        // Regular expression for parsing CSV from [Kirtan](http://stackoverflow.com/users/83664/kirtan) on Stack Overflow
+        // http://stackoverflow.com/a/1293163/34386
+        var regexString = (
+            // Delimiters.
+            "(\\" + this.fieldSeparator + "|\\r?\\n|\\r|^)" +
+
+            // Quoted fields.
+            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+
+            // Standard fields.
+            "([^\"\\" + this.fieldSeparator + "\\r\\n]*))");
+            var objPattern = new RegExp(regexString, "gi");
+            var doubleQuotePattern = new RegExp( "\"\"", "g" );
+
+        var fields = [];
+        var arrMatches = null;
+
+        while (arrMatches = objPattern.exec( this.data )){
+            var strMatchedDelimiter = arrMatches[ 1 ];
+            if (strMatchedDelimiter.length && (strMatchedDelimiter != this.fieldSeparator)){
+                captureFields.apply(this, [fields]);
+                fields = [];
             }
-        }
-        if (this.options.strict) {
-            fieldCount = this.rows[0].length || 0;
-            consistentRows = this.rows.every(function(row){ return row.length === fieldCount; });
-            if (!consistentRows) {
-                throw "Invalid CSV format. Each row should have the same number of fields as the first row. " + JSON.stringify(this.rows.map(function(row){ return row.length; } ));
+
+            if (arrMatches[ 2 ]){
+                var strMatchedValue = arrMatches[ 2 ].replace(doubleQuotePattern, "\"");
+            } else {
+                var strMatchedValue = arrMatches[ 3 ];
             }
+            fields.push( strMatchedValue );
         }
+        captureFields.apply(this, [fields]);
     };
-}
+    return parser;
+})();
