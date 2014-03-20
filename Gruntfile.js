@@ -39,6 +39,11 @@ module.exports = function(grunt){
                 src: ['csv.js'],
                 dest: 'csv.min.js'
             }
+        },
+        coveralls: {
+            options: {
+                src: 'test/coverage/lcov.info'
+            }
         }
     });
 
