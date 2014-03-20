@@ -2,12 +2,14 @@
 var CSVParser = (function(){
     "use strict";
     function captureFields(fields) {
-        if (this.options.ignoreEmpty === false || fields.some(function(field){ return field.length !== 0 })) {
+        /* jshint -W040 */
+        if (this.options.ignoreEmpty === false || fields.some(function(field){ return field.length !== 0; })) {
             this.rows.push(fields);
         }
+        /* jshint +W040 */
     }
 
-    function parser(data, options){
+    function Parser(data, options){
         var defaultOptions = { "fieldSeparator": ",", "rowSeparator": "\r\n", "strict": true, "ignoreEmpty": true};
         if (options === undefined) options = {};
         this.options = {};
@@ -19,9 +21,9 @@ var CSVParser = (function(){
         this.rows = [];
         this.data = data;
     }
-    parser.prototype.toString = function toString() { return "[object CSVParser]" }
-    parser.prototype.numberOfRows = function numberOfRows() { return this.rows.length; };
-    parser.prototype.parse = function parse(){
+    Parser.prototype.toString = function toString() { return "[object CSVParser]"; };
+    Parser.prototype.numberOfRows = function numberOfRows() { return this.rows.length; };
+    Parser.prototype.parse = function parse(){
         // Regular expression for parsing CSV from [Kirtan](http://stackoverflow.com/users/83664/kirtan) on Stack Overflow
         // http://stackoverflow.com/a/1293163/34386
         var regexString = (
@@ -38,22 +40,24 @@ var CSVParser = (function(){
 
         var fields = [];
         var arrMatches = null;
-
+        var strMatchedDelimiter, strMatchedValue;
+        /* jshint -W084 */
         while (arrMatches = objPattern.exec( this.data )){
-            var strMatchedDelimiter = arrMatches[ 1 ];
+        /* jshint +W084 */
+            strMatchedDelimiter = arrMatches[ 1 ];
             if (strMatchedDelimiter.length && (strMatchedDelimiter != this.fieldSeparator)){
                 captureFields.apply(this, [fields]);
                 fields = [];
             }
 
             if (arrMatches[ 2 ]){
-                var strMatchedValue = arrMatches[ 2 ].replace(doubleQuotePattern, "\"");
+                strMatchedValue = arrMatches[ 2 ].replace(doubleQuotePattern, "\"");
             } else {
-                var strMatchedValue = arrMatches[ 3 ];
+                strMatchedValue = arrMatches[ 3 ];
             }
             fields.push( strMatchedValue );
         }
         captureFields.apply(this, [fields]);
     };
-    return parser;
+    return Parser;
 })();
