@@ -16,7 +16,6 @@ var CSVParser = (function(){
         Object.keys(defaultOptions).forEach(function(key) {
             this.options[key] = options[key] === undefined ? defaultOptions[key] : options[key];
         }, this);
-        this.fieldSeparator = this.options.fieldSeparator;
         this.rows = [];
         this.data = data;
     }
@@ -27,13 +26,13 @@ var CSVParser = (function(){
         // http://stackoverflow.com/a/1293163/34386
         var regexString = (
             // Delimiters.
-            "(\\" + this.fieldSeparator + "|\\r?\\n|\\r|^)" +
+            "(\\" + this.options.fieldSeparator + "|\\r?\\n|\\r|^)" +
 
             // Quoted fields.
             "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
 
             // Standard fields.
-            "([^\"\\" + this.fieldSeparator + "\\r\\n]*))");
+            "([^\"\\" + this.options.fieldSeparator + "\\r\\n]*))");
             var objPattern = new RegExp(regexString, "gi");
             var doubleQuotePattern = new RegExp( "\"\"", "g" );
 
@@ -44,7 +43,7 @@ var CSVParser = (function(){
         while (arrMatches = objPattern.exec( this.data )){
         /* jshint +W084 */
             strMatchedDelimiter = arrMatches[ 1 ];
-            if (strMatchedDelimiter.length && (strMatchedDelimiter != this.fieldSeparator)){
+            if (strMatchedDelimiter.length && (strMatchedDelimiter != this.options.fieldSeparator)){
                 captureFields.apply(this, [fields]);
                 fields = [];
             }

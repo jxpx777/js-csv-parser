@@ -34,12 +34,12 @@ describe("CSVParser", function() {
     });
 
     it("uses comma as the default field separator", function(){
-      expect(parser.fieldSeparator).toEqual(",");
+      expect(parser.options.fieldSeparator).toEqual(",");
     });
     
     it("accepts a custom field separator", function(){
       parser = new CSVParser(data, {fieldSeparator: "|"});
-      expect(parser.fieldSeparator).toEqual("|");
+      expect(parser.options.fieldSeparator).toEqual("|");
     });
   });
 
