@@ -13,7 +13,15 @@ I needed one and couldn't find anything great that didn't suffer from edge cases
 ## How? ##
 Import csv.js. Create a `new CSVParser(stringOfCSVData[, options])` and call `parse`.
 
-**Options:** The second parameter to the constructor is an options object. This parameter allows to specify custom `fieldSeparator` and `rowSeparator` characters. By default, this library parses in strict mode, requiring all rows to have the same number of fields. If for some reason you don't want this, set the `strict` option to `false`.
+**Options:** The second parameter to the constructor is an options object. Supported options:
+
+    {
+      fieldSeparator : ",", 
+      strict : true,
+      ignoreEmpty: true
+    }
+
+The values above are the defaults. `strict` enforces that every row has the same number of fields. `ignoreEmpty` prevents having rows of data with all empty values.
 
 
 ## Support ##
