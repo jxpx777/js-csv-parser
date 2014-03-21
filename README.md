@@ -28,3 +28,8 @@ The values above are the defaults. `strict` enforces that every row has the same
 If you're using this, I'd love to know. If you run into bugs, report them and I'll see what I can do. Better yet, if you see a problem, fork, fix, and send a pull request. Pull requests without tests will be rejected. You should be writing tests for your code.
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jxpx777/js-csv-parser/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
+
+## Credits ##
+
+[Kirtan](http://stackoverflow.com/users/83664/kirtan) initially shared the regular expression [on Stack Overflow](http://stackoverflow.com/a/1293163/34386) Huge credit goes there.
